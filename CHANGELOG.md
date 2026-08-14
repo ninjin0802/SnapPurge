@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0 - 2026-08-14
+
+- Added an in-app release-notes view before installing an available update
+- Added visible security verification results for SHA-256, signing certificate, and package identity
+- Restricted updates to exact versioned assets from the official HTTPS GitHub repository
+- Added APK size, checksum format, package name, and internal version validation
+
 ## 0.3.1 - 2026-08-14
 
 - Redesigned the Developer page with a quieter card-and-list hierarchy

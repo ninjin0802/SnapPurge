@@ -79,7 +79,7 @@ fun DeveloperScreen(onBack: () -> Unit, onOpenPrivacy: () -> Unit, onOpenTerms: 
                     when (val result = updateState) {
                         UpdateResult.UpToDate -> Text("最新版です", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
                         is UpdateResult.Failed -> Text(result.reason, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
-                        is UpdateResult.Ready -> Text("署名とSHA-256を確認済み", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+                        is UpdateResult.Ready -> UpdateDetails(result) { open(result.releaseUrl) }
                         null -> Unit
                     }
                 }
@@ -117,6 +117,53 @@ fun DeveloperScreen(onBack: () -> Unit, onOpenPrivacy: () -> Unit, onOpenTerms: 
             }
             Spacer(Modifier.height(12.dp))
         }
+    }
+}
+
+@Composable
+private fun UpdateDetails(result: UpdateResult.Ready, onOpenRelease: () -> Unit) {
+    HorizontalDivider()
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Column {
+            Text("利用可能なアップデート", style = MaterialTheme.typography.labelMedium)
+            Text("SnapPurge v${result.version}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        }
+        AssistChip(
+            onClick = {},
+            enabled = false,
+            label = { Text("検証済み") },
+            leadingIcon = { Icon(Icons.Outlined.VerifiedUser, null, Modifier.size(18.dp)) },
+        )
+    }
+    Text("更新内容", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+    Text(result.notes, style = MaterialTheme.typography.bodyMedium)
+    Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surfaceContainerHighest) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            SecurityCheckRow("SHA-256", "一致")
+            SecurityCheckRow("署名証明書", "現在のアプリと一致")
+            SecurityCheckRow("パッケージ", result.security.packageName)
+            Text(
+                "SHA-256  ${result.security.sha256.take(12)}…${result.security.sha256.takeLast(8)}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        TextButton(onClick = onOpenRelease) {
+            Text("GitHubでReleaseを確認")
+            Spacer(Modifier.width(6.dp))
+            Icon(Icons.Outlined.OpenInNew, null, Modifier.size(18.dp))
+        }
+    }
+}
+
+@Composable
+private fun SecurityCheckRow(label: String, value: String) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Icon(Icons.Outlined.CheckCircle, null, Modifier.size(18.dp), tint = MaterialTheme.colorScheme.primary)
+        Text(label, style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+        Text(value, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 

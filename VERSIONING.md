@@ -12,7 +12,7 @@ Every application update must change and record the version before an APK is dis
 6. Build and test the exact commit associated with the Git tag `v<versionName>`.
 7. Do not replace an existing GitHub Release asset with different binary contents under the same version.
 
-Current version: **0.3.1** (`versionCode 4`)
+Current version: **0.4.0** (`versionCode 5`)
 
 The in-app Developer page reads `versionName` from the installed package, so the displayed version and APK metadata use the same source of truth.
 
