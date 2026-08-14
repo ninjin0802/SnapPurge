@@ -91,22 +91,39 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     fun deleteIndexRecords(ids: Set<Long>) {
-        viewModelScope.launch { container.repository.deleteIndexRecords(ids) }
+        if (ids.isEmpty()) return
+        viewModelScope.launch {
+            runCatching { container.repository.deleteIndexRecords(ids) }
+                .onFailure { message.value = "一覧からの削除に失敗しました。もう一度お試しください。" }
+        }
     }
 
     fun originalDeleteRequest(context: Context, ids: Set<Long>): IntentSenderRequest? {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return null
-        val uris = uiState.value.screenshots.filter { it.id in ids }.map { Uri.parse(it.uri) }
-        if (uris.isEmpty()) return null
-        val pending = android.provider.MediaStore.createDeleteRequest(context.contentResolver, uris)
-        return IntentSenderRequest.Builder(pending.intentSender).build()
+        val uris = uiState.value.screenshots.filter { it.id in ids }.mapNotNull { runCatching { Uri.parse(it.uri) }.getOrNull() }
+        if (uris.isEmpty()) {
+            message.value = "削除できる画像が見つかりませんでした。"
+            return null
+        }
+        return runCatching {
+            val pending = android.provider.MediaStore.createDeleteRequest(context.contentResolver, uris)
+            IntentSenderRequest.Builder(pending.intentSender).build()
+        }.getOrElse {
+            message.value = "Androidの削除確認を開けませんでした。画像へのアクセス権限を確認してください。"
+            null
+        }
     }
 
     fun deleteOriginalsOnLegacyDevice(context: Context, ids: Set<Long>, onDone: () -> Unit) {
         val targets = uiState.value.screenshots.filter { it.id in ids }
         viewModelScope.launch {
-            targets.forEach { runCatching { context.contentResolver.delete(Uri.parse(it.uri), null, null) } }
-            container.repository.deleteIndexRecords(ids)
+            val deletedIds = targets.mapNotNull { item ->
+                runCatching { context.contentResolver.delete(Uri.parse(item.uri), null, null) > 0 }
+                    .getOrDefault(false).takeIf { it }?.let { item.id }
+            }.toSet()
+            runCatching { container.repository.deleteIndexRecords(deletedIds) }
+                .onFailure { message.value = "削除結果の更新に失敗しました。" }
+            if (deletedIds.size != targets.size) message.value = "一部の画像を削除できませんでした。アクセス権限を確認してください。"
             onDone()
         }
     }
@@ -123,14 +140,20 @@ class HomeViewModel(private val container: AppContainer) : ViewModel() {
         viewModelScope.launch {
             val items = container.repository.getAllActiveNow()
             val ids = items.mapTo(mutableSetOf()) { it.id }
-            val request = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && items.isNotEmpty()) {
-                val pending = android.provider.MediaStore.createDeleteRequest(
-                    context.contentResolver,
-                    items.map { Uri.parse(it.uri) }
-                )
+            if (items.isEmpty()) {
+                message.value = "削除する画像はありません。"
+                onReady(emptySet(), null)
+                return@launch
+            }
+            val request = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) runCatching {
+                val uris = items.map { Uri.parse(it.uri) }
+                val pending = android.provider.MediaStore.createDeleteRequest(context.contentResolver, uris)
                 IntentSenderRequest.Builder(pending.intentSender).build()
+            }.getOrElse {
+                message.value = "Androidの削除確認を開けませんでした。画像へのアクセス権限を確認してください。"
+                null
             } else null
-            onReady(ids, request)
+            onReady(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && request == null) emptySet() else ids, request)
         }
     }
 

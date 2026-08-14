@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.1 - 2026-08-14
+
+- Fixed crashes when Android rejects a MediaStore delete confirmation request
+- Added safe handling for inaccessible, expired, or unsupported image URIs
+- Prevented unhandled database deletion errors from terminating the app
+- Added clear in-app error messages when an image cannot be deleted
+
 ## 0.4.0 - 2026-08-14
 
 - Added an in-app release-notes view before installing an available update

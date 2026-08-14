@@ -28,15 +28,19 @@ import java.util.Date
 @Composable
 fun DetailScreen(viewModel: DetailViewModel, onBack: () -> Unit) {
     val item by viewModel.screenshot.collectAsState()
+    val message by viewModel.message.collectAsState()
     val context = LocalContext.current
+    val snackbar = remember { SnackbarHostState() }
     var showOcr by remember { mutableStateOf(false) }
     var deleteChoice by remember { mutableStateOf(false) }
     var confirmOriginalDelete by remember { mutableStateOf(false) }
     val deleteLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) { viewModel.deleteIndexRecord(); onBack() }
     }
+    LaunchedEffect(message) { message?.let { snackbar.showSnackbar(it) } }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbar) },
         topBar = {
             TopAppBar(
                 title = { Text("スクリーンショット") },
