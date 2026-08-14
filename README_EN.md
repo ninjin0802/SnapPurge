@@ -4,7 +4,7 @@
 
 **A privacy-first Android app that makes screenshots easy to find and organize.**
 
-[![Version](https://img.shields.io/badge/version-0.2.0-6750A4?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.0-6750A4?style=flat-square)](CHANGELOG.md)
 ![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Privacy](https://img.shields.io/badge/privacy-local--only-2563EB?style=flat-square&logo=shield&logoColor=white)
@@ -28,14 +28,15 @@ SnapPurge uses on-device OCR to make growing screenshot libraries searchable, cl
 - Individual, batch, and delete-all flows
 - A clear choice between removing an index entry and deleting the original image
 - System, Light, and Dark themes
-- No `INTERNET` permission
+- Screenshot analysis remains local; networking is limited to user-initiated GitHub update checks
+- GitHub release checks with signing-certificate and SHA-256 verification
 
 ## Requirements
 
 | Item | Requirement |
 |---|---|
 | Android | Android 8.0 (API 26) or later |
-| Current version | 0.2.0 (versionCode 2) |
+| Current version | 0.3.0 (versionCode 3) |
 | Distribution | GitHub Releases |
 | Data processing | On device only |
 
@@ -63,6 +64,7 @@ Output: `app/build/outputs/apk/debug/app-debug.apk`
 ## Privacy and safety
 
 - Screenshots, OCR text, search terms, and classifications are not uploaded.
+- GitHub is contacted only after the user taps the update button; there are no background update checks.
 - Original-image moves and deletions use Android system confirmation when required.
 - Removing an item from SnapPurge does not delete the original image.
 - OFUSE and X are external services governed by their respective policies.

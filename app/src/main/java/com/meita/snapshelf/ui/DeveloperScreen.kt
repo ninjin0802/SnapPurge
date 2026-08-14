@@ -11,10 +11,14 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import com.meita.snapshelf.update.GitHubUpdateManager
+import com.meita.snapshelf.update.UpdateResult
 
 private const val DonationUrl = "https://ofuse.me/ninjin"
 private const val XUrl = "https://x.com/_nin82"
@@ -26,6 +30,10 @@ fun DeveloperScreen(onBack: () -> Unit, onOpenPrivacy: () -> Unit, onOpenTerms: 
     @Suppress("DEPRECATION")
     val version = context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "不明"
     fun open(url: String) = context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    val scope = rememberCoroutineScope()
+    val updater = remember { GitHubUpdateManager(context.applicationContext) }
+    var updateState by remember { mutableStateOf<UpdateResult?>(null) }
+    var checking by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -43,6 +51,29 @@ fun DeveloperScreen(onBack: () -> Unit, onOpenPrivacy: () -> Unit, onOpenTerms: 
                     Text("SnapPurgeを作っています。スクショ整理が少しでも快適になればうれしいです。")
                     Text("Version $version", style = MaterialTheme.typography.labelLarge)
                 }
+            }
+
+            Text("アップデート", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+            Text("GitHub Releasesから最新版を確認します。通信はこのボタンを押したときだけ行います。")
+            Button(
+                onClick = {
+                    val ready = updateState as? UpdateResult.Ready
+                    if (ready != null) updater.launchInstaller(ready.apk)
+                    else scope.launch { checking = true; updateState = updater.checkAndDownload(); checking = false }
+                },
+                enabled = !checking,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (checking) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                else Icon(if (updateState is UpdateResult.Ready) Icons.Outlined.InstallMobile else Icons.Outlined.SystemUpdate, null)
+                Spacer(Modifier.width(8.dp))
+                Text(if (updateState is UpdateResult.Ready) "v${(updateState as UpdateResult.Ready).version}をインストール" else "アップデートを確認")
+            }
+            when (val result = updateState) {
+                UpdateResult.UpToDate -> Text("最新版です。", color = MaterialTheme.colorScheme.primary)
+                is UpdateResult.Failed -> Text(result.reason, color = MaterialTheme.colorScheme.error)
+                is UpdateResult.Ready -> Text("署名とSHA-256を確認済みです。インストール時はAndroidの案内に従ってください。")
+                null -> Unit
             }
 
             Text("SnapPurgeを応援", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
@@ -76,6 +107,8 @@ val PrivacyPolicyText = """
 施行日: 2026年8月14日
 
 SnapPurgeは、スクリーンショットの画像、OCR結果、分類、検索語、タグ、リマインダーを端末内で処理します。これらの情報を開発者のサーバーへ送信、収集、販売、第三者提供しません。
+
+「アップデートを確認」を押した場合に限りGitHub Releasesへ接続し、最新版情報、APK、SHA-256を取得します。スクリーンショットや解析情報は送信せず、バックグラウンド確認も行いません。
 
 アプリは写真へのアクセス権限を、ユーザーが選択した画像の表示・解析・整理・削除のために使用します。通知権限は、ユーザーが設定したリマインダーを知らせるために使用します。
 

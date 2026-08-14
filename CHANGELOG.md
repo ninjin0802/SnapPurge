@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 - 2026-08-14
+
+- Added user-initiated update checks against the official GitHub Releases page
+- Added APK download with SHA-256 and ninjin signing-certificate verification
+- Added a guarded handoff to the Android package installer
+- Updated privacy documentation for update-only network access
+
 ## 0.2.0 - 2026-08-14
 
 - Reworked the repository documentation with Japanese and English READMEs and standard status badges

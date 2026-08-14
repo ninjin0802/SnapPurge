@@ -9,7 +9,7 @@ SnapPurge is distributed through GitHub Releases, not Google Play.
 - [ ] Confirm the Developer page displays the new version
 - [ ] Run `testDebugUnitTest`, `lintDebug`, and `assembleRelease`
 - [ ] Test install/update, screenshot access, local OCR, folder moves, and guarded deletion on a real device
-- [ ] Confirm the merged manifest has no `INTERNET` or `ACCESS_NETWORK_STATE` permission
+- [ ] Confirm network code is limited to user-initiated GitHub update checks and no analytics SDK is present
 - [ ] Build a release APK signed with the stable ninjin release key; never distribute a debug APK as a release
 - [ ] Generate and publish the APK SHA-256 checksum
 - [ ] Create annotated Git tag `v<versionName>` from the tested commit

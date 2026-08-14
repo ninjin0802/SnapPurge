@@ -4,7 +4,7 @@
 
 **スクリーンショットを、端末内だけで見つけやすく整理するAndroidアプリ。**
 
-[![Version](https://img.shields.io/badge/version-0.2.0-6750A4?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.0-6750A4?style=flat-square)](CHANGELOG.md)
 ![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Privacy](https://img.shields.io/badge/privacy-local--only-2563EB?style=flat-square&logo=shield&logoColor=white)
@@ -28,14 +28,15 @@ SnapPurgeは、増え続けるスクリーンショットをOCRで読み取り�
 - 個別削除、複数選択削除、すべて削除
 - 「一覧から外す」と「端末の元画像を削除」を明確に分離
 - システム連動、ライト、ダークのテーマ切替
-- 完全ローカル処理。`INTERNET`権限なし
+- 画像解析は完全ローカル。通信はユーザー操作によるGitHub更新確認のみ
+- GitHub Releasesからの更新確認、署名・SHA-256検証、APKインストール
 
 ## 必要環境
 
 | 項目 | 内容 |
 |---|---|
 | Android | Android 8.0（API 26）以上 |
-| 現在のバージョン | 0.2.0（versionCode 2） |
+| 現在のバージョン | 0.3.0（versionCode 3） |
 | 配布方法 | GitHub Releases |
 | データ処理 | 端末内のみ |
 
@@ -63,6 +64,7 @@ Android Studioでこのリポジトリを開き、JDK 17以上とAndroid SDK Pla
 ## プライバシーと安全性
 
 - スクリーンショット、OCR結果、検索語、分類結果を外部送信しません。
+- 更新確認ボタンを押した場合のみGitHubへ接続します。バックグラウンド通信は行いません。
 - 元画像の移動・削除には、Androidが要求するシステム確認を使用します。
 - 一覧から削除しただけでは、端末の元画像は削除されません。
 - OFUSEやXを開いた後は、各外部サービスの規約が適用されます。
