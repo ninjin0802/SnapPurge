@@ -2,6 +2,7 @@
 
 ## 0.2.0 - 2026-08-14
 
+- Reworked the repository documentation with Japanese and English READMEs and standard status badges
 - Renamed the product to SnapPurge
 - Simplified the Material 3 screenshot-first interface
 - Added System, Light, and Dark theme selection
