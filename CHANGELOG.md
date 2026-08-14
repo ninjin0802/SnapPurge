@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 - 2026-08-14
+
+- Added a dedicated document organizer for PDF, text, and Office files
+- Added local SHA-256 duplicate detection and old/empty document suggestions
+- Added review selection with file name, size, date, preview, count, and recoverable failure handling
+- Added confirmed SAF document deletion without broad storage permissions
+- Added a clear Screenshots / Documents library switch
+
 ## 0.4.1 - 2026-08-14
 
 - Fixed crashes when Android rejects a MediaStore delete confirmation request

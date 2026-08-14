@@ -149,3 +149,10 @@ Material 3 を基盤に、写真一覧を主役にした静かでモダンなUI�
 - ビルド、テスト、Lint が成功する
 - 画像および解析結果の外部送信がなく、プライバシー説明と実装が一致する
 - 既知の制約と今後の改善候補が README に記録されている
+# Document organizer extension (v0.5.0)
+
+- Use Android Storage Access Framework only; never request broad all-files access.
+- Let users manually choose PDF, text, and Office documents.
+- Analyze file metadata and SHA-256 locally to suggest old, empty, and exact-duplicate files.
+- Require an explicit review and confirmation before physical deletion.
+- Remove only successfully deleted items and keep failures visible.

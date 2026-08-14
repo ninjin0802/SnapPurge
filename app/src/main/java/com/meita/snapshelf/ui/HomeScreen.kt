@@ -35,7 +35,7 @@ import com.meita.snapshelf.settings.ThemeMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel, onOpenDetail: (Long) -> Unit, onOpenDeveloper: () -> Unit) {
+fun HomeScreen(viewModel: HomeViewModel, onOpenDetail: (Long) -> Unit, onOpenDeveloper: () -> Unit, onOpenDocuments: () -> Unit) {
     val state by viewModel.uiState.collectAsState()
     val theme by viewModel.themeMode.collectAsState()
     val context = LocalContext.current
@@ -130,6 +130,10 @@ fun HomeScreen(viewModel: HomeViewModel, onOpenDetail: (Long) -> Unit, onOpenDev
         }
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding)) {
+            SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 8.dp)) {
+                SegmentedButton(true, onClick = {}, shape = SegmentedButtonDefaults.itemShape(0, 2), label = { Text("スクショ") }, icon = { Icon(Icons.Outlined.PhotoLibrary, null, Modifier.size(18.dp)) })
+                SegmentedButton(false, onClick = onOpenDocuments, shape = SegmentedButtonDefaults.itemShape(1, 2), label = { Text("ドキュメント") }, icon = { Icon(Icons.Outlined.Description, null, Modifier.size(18.dp)) })
+            }
             SearchField(state.query, viewModel::onQueryChange)
             CategoryRow(state.category, viewModel::onCategoryChange)
             when {

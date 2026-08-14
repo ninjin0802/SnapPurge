@@ -18,9 +18,11 @@ fun SnapShelfApp(container: AppContainer) {
             HomeScreen(
                 viewModel = vm,
                 onOpenDetail = { id -> navController.navigate("detail/$id") },
-                onOpenDeveloper = { navController.navigate("developer") }
+                onOpenDeveloper = { navController.navigate("developer") },
+                onOpenDocuments = { navController.navigate("documents") }
             )
         }
+        composable("documents") { DocumentOrganizerScreen { navController.popBackStack() } }
         composable(
             route = "detail/{id}",
             arguments = listOf(navArgument("id") { type = NavType.LongType })

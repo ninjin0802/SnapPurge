@@ -4,7 +4,7 @@
 
 **スクリーンショットを、端末内だけで見つけやすく整理するAndroidアプリ。**
 
-[![Version](https://img.shields.io/badge/version-0.4.1-6750A4?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.5.0-6750A4?style=flat-square)](CHANGELOG.md)
 ![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Privacy](https://img.shields.io/badge/privacy-local--only-2563EB?style=flat-square&logo=shield&logoColor=white)
@@ -36,7 +36,7 @@ SnapPurgeは、増え続けるスクリーンショットをOCRで読み取り�
 | 項目 | 内容 |
 |---|---|
 | Android | Android 8.0（API 26）以上 |
-| 現在のバージョン | 0.4.1（versionCode 6） |
+| 現在のバージョン | 0.5.0（versionCode 7） |
 | 配布方法 | GitHub Releases |
 | データ処理 | 端末内のみ |
 
