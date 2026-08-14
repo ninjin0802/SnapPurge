@@ -4,7 +4,7 @@
 
 **A privacy-first Android app that makes screenshots easy to find and organize.**
 
-[![Version](https://img.shields.io/badge/version-0.3.0-6750A4?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.3.1-6750A4?style=flat-square)](CHANGELOG.md)
 ![Android](https://img.shields.io/badge/Android-8.0%2B-3DDC84?style=flat-square&logo=android&logoColor=white)
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.3.21-7F52FF?style=flat-square&logo=kotlin&logoColor=white)
 ![Privacy](https://img.shields.io/badge/privacy-local--only-2563EB?style=flat-square&logo=shield&logoColor=white)
@@ -36,7 +36,7 @@ SnapPurge uses on-device OCR to make growing screenshot libraries searchable, cl
 | Item | Requirement |
 |---|---|
 | Android | Android 8.0 (API 26) or later |
-| Current version | 0.3.0 (versionCode 3) |
+| Current version | 0.3.1 (versionCode 4) |
 | Distribution | GitHub Releases |
 | Data processing | On device only |
 

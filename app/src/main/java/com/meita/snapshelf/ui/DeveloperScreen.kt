@@ -3,6 +3,7 @@ package com.meita.snapshelf.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -10,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,64 +43,94 @@ fun DeveloperScreen(onBack: () -> Unit, onOpenPrivacy: () -> Unit, onOpenTerms: 
     }) { padding ->
         Column(
             Modifier.fillMaxSize().padding(padding).verticalScroll(rememberScrollState()).padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Surface(shape = RoundedCornerShape(24.dp), color = MaterialTheme.colorScheme.primaryContainer) {
-                Column(Modifier.padding(22.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text("ninjin", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                    Text("SnapPurgeを作っています。スクショ整理が少しでも快適になればうれしいです。")
-                    Text("Version $version", style = MaterialTheme.typography.labelLarge)
+                Row(Modifier.padding(22.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.primary) {
+                        Icon(Icons.Outlined.Person, null, Modifier.padding(14.dp).size(28.dp), tint = MaterialTheme.colorScheme.onPrimary)
+                    }
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text("ninjin", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Text("SnapPurge Developer", style = MaterialTheme.typography.bodyMedium)
+                        Text("Version $version", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = .72f))
+                    }
                 }
             }
 
-            Text("アップデート", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-            Text("GitHub Releasesから最新版を確認します。通信はこのボタンを押したときだけ行います。")
-            Button(
-                onClick = {
-                    val ready = updateState as? UpdateResult.Ready
-                    if (ready != null) updater.launchInstaller(ready.apk)
-                    else scope.launch { checking = true; updateState = updater.checkAndDownload(); checking = false }
-                },
-                enabled = !checking,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                if (checking) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                else Icon(if (updateState is UpdateResult.Ready) Icons.Outlined.InstallMobile else Icons.Outlined.SystemUpdate, null)
-                Spacer(Modifier.width(8.dp))
-                Text(if (updateState is UpdateResult.Ready) "v${(updateState as UpdateResult.Ready).version}をインストール" else "アップデートを確認")
-            }
-            when (val result = updateState) {
-                UpdateResult.UpToDate -> Text("最新版です。", color = MaterialTheme.colorScheme.primary)
-                is UpdateResult.Failed -> Text(result.reason, color = MaterialTheme.colorScheme.error)
-                is UpdateResult.Ready -> Text("署名とSHA-256を確認済みです。インストール時はAndroidの案内に従ってください。")
-                null -> Unit
-            }
-
-            Text("SnapPurgeを応援", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-            Text("もしSnapPurgeが役に立ったら、OFUSEで応援していただけると開発継続の大きな力になります。いただいた応援は、品質改善と新機能の開発に活用します。")
-            Button(onClick = { open(DonationUrl) }, modifier = Modifier.fillMaxWidth()) {
-                Icon(Icons.Outlined.FavoriteBorder, null); Spacer(Modifier.width(8.dp)); Text("OFUSEで応援する")
+            SectionLabel("アップデート")
+            Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainer) {
+                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("GitHub Releasesから安全に最新版を確認します。", style = MaterialTheme.typography.bodyMedium)
+                    FilledTonalButton(
+                        onClick = {
+                            val ready = updateState as? UpdateResult.Ready
+                            if (ready != null) updater.launchInstaller(ready.apk)
+                            else scope.launch { checking = true; updateState = updater.checkAndDownload(); checking = false }
+                        },
+                        enabled = !checking,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        if (checking) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                        else Icon(if (updateState is UpdateResult.Ready) Icons.Outlined.InstallMobile else Icons.Outlined.SystemUpdate, null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(if (updateState is UpdateResult.Ready) "v${(updateState as UpdateResult.Ready).version}をインストール" else "アップデートを確認")
+                    }
+                    when (val result = updateState) {
+                        UpdateResult.UpToDate -> Text("最新版です", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+                        is UpdateResult.Failed -> Text(result.reason, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                        is UpdateResult.Ready -> Text("署名とSHA-256を確認済み", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+                        null -> Unit
+                    }
+                }
             }
 
-            HorizontalDivider()
-            ListItem(
-                headlineContent = { Text("Xでninjinをフォロー") },
-                supportingContent = { Text("@_nin82") },
-                leadingContent = { Icon(Icons.Outlined.AlternateEmail, null) },
-                trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
-            )
-            TextButton(onClick = { open(XUrl) }, modifier = Modifier.fillMaxWidth()) { Text("Xを開く") }
+            SectionLabel("サポート・リンク")
+            Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainer) {
+                Column {
+                    ListItem(
+                        headlineContent = { Text("OFUSEで応援する") },
+                        supportingContent = { Text("応援が開発継続と品質改善の力になります") },
+                        leadingContent = { Icon(Icons.Outlined.FavoriteBorder, null, tint = MaterialTheme.colorScheme.primary) },
+                        trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+                        modifier = Modifier.clickable { open(DonationUrl) },
+                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+                    )
+                    HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+                    ListItem(
+                        headlineContent = { Text("ninjin on X") }, supportingContent = { Text("@_nin82") },
+                        leadingContent = { Icon(Icons.Outlined.AlternateEmail, null) },
+                        trailingContent = { Icon(Icons.Outlined.OpenInNew, null) },
+                        modifier = Modifier.clickable { open(XUrl) },
+                        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+                    )
+                }
+            }
 
-            HorizontalDivider()
-            Text("アプリ情報", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
-            ListItem(headlineContent = { Text("プライバシーポリシー") }, leadingContent = { Icon(Icons.Outlined.PrivacyTip, null) }, trailingContent = { Icon(Icons.Outlined.ChevronRight, null) })
-            TextButton(onClick = onOpenPrivacy, modifier = Modifier.fillMaxWidth()) { Text("内容を確認") }
-            ListItem(headlineContent = { Text("利用規約") }, leadingContent = { Icon(Icons.Outlined.Description, null) }, trailingContent = { Icon(Icons.Outlined.ChevronRight, null) })
-            TextButton(onClick = onOpenTerms, modifier = Modifier.fillMaxWidth()) { Text("内容を確認") }
+            SectionLabel("法的情報")
+            Surface(shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surfaceContainer) {
+                Column {
+                    LegalRow("プライバシーポリシー", Icons.Outlined.PrivacyTip, onOpenPrivacy)
+                    HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+                    LegalRow("利用規約", Icons.Outlined.Description, onOpenTerms)
+                }
+            }
+            Spacer(Modifier.height(12.dp))
         }
     }
+}
+
+@Composable private fun SectionLabel(text: String) {
+    Text(text, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 4.dp, top = 8.dp))
+}
+
+@Composable private fun LegalRow(title: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
+    ListItem(
+        headlineContent = { Text(title) }, leadingContent = { Icon(icon, null) },
+        trailingContent = { Icon(Icons.Outlined.ChevronRight, null) },
+        modifier = Modifier.clickable(onClick = onClick),
+        colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+    )
 }
 
 val PrivacyPolicyText = """

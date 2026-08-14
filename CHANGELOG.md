@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - 2026-08-14
+
+- Redesigned the Developer page with a quieter card-and-list hierarchy
+- Made rows with chevrons directly tappable
+- Removed redundant “open” and “view details” buttons
+
 ## 0.3.0 - 2026-08-14
 
 - Added user-initiated update checks against the official GitHub Releases page
