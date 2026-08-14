@@ -13,3 +13,4 @@
 /ui-v2.png
 *.jks
 *.keystore
+/dist/
